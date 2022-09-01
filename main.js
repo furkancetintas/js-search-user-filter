@@ -4,18 +4,15 @@ let listItem = [];
 
 inputFilterDOM.addEventListener('input', (e) => filterData(e.target.value));
 
-async function getData() {
-  const apiRes = await fetch('https://randomuser.me/api/?results=50');
+fetch('https://randomuser.me/api/?results=50')
+  .then((response) => response.json())
+  .then((data) => {
+    // Clear result for Loading text..
+    resultUl.innerHTML = '';
+    data.results.map((user) => {
+      const li = document.createElement('li');
 
-  const { results } = await apiRes.json();
-
-  // Clear result
-  resultUl.innerHTML = '';
-
-  results.forEach((user) => {
-    const li = document.createElement('li');
-
-    li.innerHTML = `
+      li.innerHTML = `
         <img src="${user.picture.large}" alt="${user.name.first}"/>
         <div class="user-info">
             <h4>${user.name.first} ${user.name.last}</h4>
@@ -25,12 +22,11 @@ async function getData() {
         </div>
     `;
 
-    listItem.push(li);
+      listItem.push(li);
 
-    resultUl.appendChild(li);
+      resultUl.appendChild(li);
+    });
   });
-}
-getData();
 
 function filterData(searchTerm) {
   listItem.forEach((item) => {
